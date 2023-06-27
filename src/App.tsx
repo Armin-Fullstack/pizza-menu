@@ -48,8 +48,8 @@ interface PizzaProps {
     name: string;
     ingredients: string;
     price: number;
-    soldOut: boolean,
-  }
+    soldOut: boolean;
+  };
 }
 const App: React.FC = () => {
   return (
@@ -73,11 +73,12 @@ function Menu(): JSX.Element {
   return (
     <main className="menu">
       <h2>Our menu</h2>
-      <ul className="pizzas">
+      {pizzaData.length > 0 ? <ul className="pizzas">
         {pizzaData.map((pizza) => {
           return <Pizza pizzaObj={pizza} />;
         })}
-      </ul>
+      </ul> : <p>We're still working on our menu.</p>}
+      
     </main>
   );
 }
@@ -99,13 +100,17 @@ function Pizza(props: PizzaProps): JSX.Element {
 
 function Footer(): JSX.Element {
   const hour = new Date().getHours();
-  const openHour = 20;
+  const openHour = 12;
   const closeHour = 22;
   const isOpen = hour >= openHour && hour <= closeHour;
-  console.log(isOpen);
   return (
     <footer className="footer">
-      <p>We are curently open! {new Date().toLocaleTimeString()}</p>
+      <div className="order">
+        {isOpen ? (
+          <p>We're open until {closeHour}:00. Come visit us or order online.</p> 
+        ) : <p>We're happy to welcome you between {openHour}:00 and {closeHour}:00.</p>}
+        <button className="btn">Order</button>
+      </div>
     </footer>
   );
 }
