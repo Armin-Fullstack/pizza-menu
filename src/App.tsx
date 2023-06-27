@@ -51,6 +51,9 @@ interface PizzaProps {
     soldOut: boolean;
   };
 }
+interface OrderProps {
+  closeHour: number;
+}
 const App: React.FC = () => {
   return (
     <div className="container">
@@ -73,26 +76,32 @@ function Menu(): JSX.Element {
   return (
     <main className="menu">
       <h2>Our menu</h2>
-      {pizzaData.length > 0 ? <ul className="pizzas">
-        {pizzaData.map((pizza) => {
-          return <Pizza pizzaObj={pizza} />;
-        })}
-      </ul> : <p>We're still working on our menu.</p>}
-      
+      <p>Athuentic Italian cuisine. 6 creative dishes to choose from. All from our stone oven, all organic, all delicious.</p>
+      {pizzaData.length > 0 ? (
+        <ul className="pizzas">
+          {pizzaData.map((pizza) => {
+            return <Pizza pizzaObj={pizza} />;
+          })}
+        </ul>
+      ) : (
+        <p>We're still working on our menu.</p>
+      )}
     </main>
   );
 }
 
-function Pizza(props: PizzaProps): JSX.Element {
+function Pizza({ pizzaObj }: PizzaProps): JSX.Element {
+
   return (
-    <li className="pizza">
+    <li className={`pizza ${pizzaObj.soldOut && "sold-out"}`}> 
       <figure>
-        <img src={props.pizzaObj.photoName} alt="photo" />
+        <img src={pizzaObj.photoName} alt="photo" />
       </figure>
       <div>
-        <h3>{props.pizzaObj.name}</h3>
-        <p>{props.pizzaObj.ingredients}</p>
-        <span>{props.pizzaObj.price}</span>
+        <h3>{pizzaObj.name}</h3>
+        <p>{pizzaObj.ingredients}</p>
+        <span>{!pizzaObj.soldOut ? pizzaObj.price : "SOLD OUT"}</span> 
+        {/* we know the JSX element */}
       </div>
     </li>
   );
@@ -105,13 +114,23 @@ function Footer(): JSX.Element {
   const isOpen = hour >= openHour && hour <= closeHour;
   return (
     <footer className="footer">
-      <div className="order">
-        {isOpen ? (
-          <p>We're open until {closeHour}:00. Come visit us or order online.</p> 
-        ) : <p>We're happy to welcome you between {openHour}:00 and {closeHour}:00.</p>}
-        <button className="btn">Order</button>
-      </div>
+      {isOpen ? (
+        <Order closeHour={closeHour} />
+      ) : (
+        <p>
+          We're happy to welcome you between {openHour}:00 and {closeHour}:00.
+        </p>
+      )}
     </footer>
+  );
+}
+
+function Order({ closeHour }: OrderProps): JSX.Element {
+  return (
+    <div className="order">
+      <p>We're open until {closeHour}:00. Come visit us or order online.</p>
+      <button className="btn">Order</button>x
+    </div>
   );
 }
 
